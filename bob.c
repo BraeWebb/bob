@@ -28,14 +28,16 @@ int main(int argc, char** argv){
     printf("%c\n", argv[2][0]);
 
     Grid* grid = createGrid(10, 7);
-    grid->set(grid, 0, 0, p1);
-    grid->set(grid, 5, 5, p1);
-    grid->set(grid, 7, 3, p2);
+    grid->set(grid, 0, 0, PLAYER1);
+    grid->set(grid, 5, 5, PLAYER1);
+    grid->set(grid, 7, 3, PLAYER2);
     
     printf("%d\n", grid->get(grid, 7, 3));
     printf("%d\n", grid->get(grid, 7, 4));
 
     printGrid(grid);
+
+    printf("\n%s\n", grid->serialize(grid));
 
     return 0;
 }
