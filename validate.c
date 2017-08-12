@@ -1,13 +1,15 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <errno.h>
 
 #include "validate.h"
 
 #define USAGE "Usage: bob p1type p2type [height width | filename]\n"
 #define INVALID_TYPE "Invalid type\n"
-#define GRID_DIMENSIONS "Sensible board dimensions please!"
-#define FILE_OPEN "Could not start reading from savefile"
-#define FILE_READ "Incorrect file contents"
+#define GRID_DIMENSIONS "Sensible board dimensions please!\n"
+#define FILE_OPEN "Could not start reading from savefile\n"
+#define FILE_READ "Incorrect file contents\n"
 
 int validate(int argc, char** argv){
     
@@ -28,8 +30,22 @@ int validate(int argc, char** argv){
     }
 
     if(argc == 5){
-        printf(GRID_DIMENSIONS);
-        return 3;
+        errno = 0;
+        char* p;
+        
+        strtol(argv[3], &p, 10);
+        
+        if(errno != 0 || *p != '\0'){
+            printf(GRID_DIMENSIONS);
+            return 3;
+        }
+        
+        strtol(argv[4], &p, 10);
+        
+        if(errno != 0 || *p != '\0'){
+            printf(GRID_DIMENSIONS);
+            return 3;
+        }
     }
 
     if(argc == 4){
