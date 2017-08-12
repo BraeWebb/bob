@@ -5,6 +5,9 @@ typedef struct grid {
     int rows;
     int columns;
     int** values;
+
+    void (*set)(struct grid*, int, int, int);
+    int (*get)(struct grid*, int, int);
 } Grid;
 
 Grid* createGrid(int rows, int columns);

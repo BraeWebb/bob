@@ -16,6 +16,13 @@ char convertCharacter(int character){
     }
 }
 
+void setGridValue(Grid* grid, int x, int y, int value){
+    grid->values[x][y] = value;
+}
+
+int getGridValue(Grid* grid, int x, int y){
+    return grid->values[x][y];
+}
 
 Grid* createGrid(int rows, int columns){
     int** values = malloc(sizeof(int *) * rows);
@@ -29,6 +36,9 @@ Grid* createGrid(int rows, int columns){
     grid->rows = rows;
     grid->columns = columns;
     grid->values = values;
+
+    grid->set = setGridValue;
+    grid->get = getGridValue;
     
     return grid;
 }
