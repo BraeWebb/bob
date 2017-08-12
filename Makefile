@@ -6,11 +6,14 @@ all: build
 grid.o: grid.c
 	$(CC) $(FLAGS) -c grid.c -o grid.o
 
-build: bob.c grid.o
-	$(CC) $(FLAGS) bob.c grid.o -o bob
+validate.o: validate.c
+	$(CC) $(FLAGS) -c validate.c -o validate.o
+
+build: bob.c grid.o validate.o
+	$(CC) $(FLAGS) bob.c grid.o validate.o -o bob
 
 run: build
 	./bob
 
 clean:
-	rm -f bob grid.o
+	rm -f bob grid.o validate.o

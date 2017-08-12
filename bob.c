@@ -1,27 +1,13 @@
 #include <stdio.h>
-#include <string.h>
 
 #include "grid.h"
-
-#define USAGE "Usage: bob p1type p2type [height width | filename]\n"
-#define INVALID_TYPE "Invalid type\n"
+#include "validate.h"
 
 int main(int argc, char** argv){
-    
-    if(argc < 3){
-        printf(USAGE);
-        return 1;
-    }
-    
-    if(strlen(argv[1]) != 1 || strlen(argv[2]) != 1){
-        printf(INVALID_TYPE);
-        return 2;
-    }
 
-    if((argv[1][0] != 'a' && argv[1][0] != 'm')
-        || (argv[2][0] != 'a' && argv[2][0] != 'm')){
-        printf(INVALID_TYPE);
-        return 2;
+    int error_code = validate(argc, argv);
+    if(error_code != 0){
+        return error_code;
     }
 
     printf("%c\n", argv[1][0]);
