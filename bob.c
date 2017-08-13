@@ -26,9 +26,12 @@ int main(int argc, char** argv){
 
     printGrid(grid);
     
-    for(int i = 0; i < 20; i++){
+    while (1) {
         game->move(game);
         printGrid(grid);
+        if(game->isOver(game)){
+            break;
+        }
     }
 
     return 0;

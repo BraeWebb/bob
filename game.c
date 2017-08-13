@@ -49,6 +49,17 @@ int* automaticMove(Game* game){
     return result;
 }
 
+int isGameOver(Game* game){
+    for (int x = 0; x < game->grid->rows; x++){
+        for (int y = 0; y < game->grid->columns; y++){
+            if (game->grid->get(game->grid, x, y) == 0){
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
+
 void takeTurn(Game* game){
     int* move = malloc(sizeof(int) * 2);
 
@@ -78,6 +89,7 @@ Game* createGame(Grid* grid, int player1Mode, int player2Mode){
     game->grid = grid;
 
     game->move = takeTurn;
+    game->isOver = isGameOver;
     
     return game;
 }

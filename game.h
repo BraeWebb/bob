@@ -7,6 +7,7 @@ typedef struct game {
     Grid* grid;
 
     void (*move)(struct game*);
+    int (*isOver)(struct game*);
 } Game;
 
 Game* createGame(Grid* grid, int player1Mode, int player2Mode);
