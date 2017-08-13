@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "grid.h"
+#include "game.h"
 #include "validate.h"
 
 int main(int argc, char** argv){
@@ -22,7 +22,14 @@ int main(int argc, char** argv){
         grid = createGrid(10, 7);
     }
 
+    Game* game = createGame(grid, 0, 0);
+
     printGrid(grid);
+    
+    for(int i = 0; i < 20; i++){
+        game->move(game);
+        printGrid(grid);
+    }
 
     return 0;
 }
