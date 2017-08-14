@@ -16,7 +16,7 @@ build: bob.c game.o validate.o
 	$(CC) $(FLAGS) bob.c game.o grid.o validate.o -o bob
 
 run: build
-	./bob
+	./bob a a 3 3
 
 clean:
 	rm -f bob grid.o validate.o

@@ -59,6 +59,63 @@ int** getNeighbours(Grid* grid, int x, int y){
     return neighbours;
 }
 
+int positionInArray(int* position, int** array, int size){
+    for(int i = 0; i < size; i++){
+        if(array[i] != NULL){
+            if(array[i][0] == position[0] && array[i][1] == position[1]){
+                return 1;
+            }
+        }   
+    }
+    return 0;
+}
+
+int** searchGrid(Grid* grid, int startX, int startY){
+    // Theoretically it shouldn't need to search more than half the grid...
+    // but just to be safe
+    int maxSize = grid->rows * grid->columns;
+    int** nodes = malloc(sizeof(int*) * maxSize);
+    int** visited = malloc(sizeof(int*) * maxSize);
+    
+    for(int i = 0; i < maxSize; i++){
+        nodes[i] = NULL;
+        visited[i] = NULL;
+    }
+
+    int type = grid->get(grid, startX, startY);
+    
+    nodes[0] = malloc(sizeof(int) * 2);
+    nodes[0][0] = startX;
+    nodes[0][1] = startY;
+    
+    int nodeCount = 1;
+    int visitedCount = 0;
+
+    while(nodeCount > 0){
+        int* node = nodes[--nodeCount];
+        
+        int x = node[0];
+        int y = node[1];
+
+        if(grid->get(grid, x, y) == type){
+            if(!positionInArray(node, visited, maxSize)){
+                
+                int** neighbours = grid->findNeighbours(grid, x, y);
+                
+                for(int i = 0; i < 6; i++){
+                    if(neighbours[i] != NULL){
+                        nodes[nodeCount++] = neighbours[i];
+                    }
+                }
+                
+                visited[visitedCount++] = node;
+            }
+        }
+    }
+
+    return visited;
+}
+
 char* serializeGrid(Grid* grid){
     char* string = malloc(sizeof(Marker) * grid->rows * (grid->columns + 1));
     
@@ -89,7 +146,8 @@ Grid* createGrid(int rows, int columns){
     grid->set = setGridValue;
     grid->get = getGridValue;
     grid->serialize = serializeGrid;
-    grid->findNeighbours = getNeighbours;    
+    grid->findNeighbours = getNeighbours;
+    grid->search = searchGrid;    
 
     return grid;
 }

@@ -34,5 +34,13 @@ int main(int argc, char** argv){
         }
     }
 
+    int** searched = grid->search(grid, 0, 0);
+    for(int i = 0; i < (grid->rows * grid->columns); i++){
+        if(searched[i] != NULL){
+            printf("-> [%d, %d] ", searched[i][0], searched[i][1]);
+        }
+    }
+    printf("\n");
+
     return 0;
 }
