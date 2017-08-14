@@ -12,6 +12,7 @@ typedef struct grid {
     void (*set)(struct grid*, int, int, Marker);
     Marker (*get)(struct grid*, int, int);
     char* (*serialize)(struct grid*);
+    int** (*findNeighbours)(struct grid*, int, int);
 } Grid;
 
 Grid* createGrid(int rows, int columns);
