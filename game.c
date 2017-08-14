@@ -49,7 +49,46 @@ int* automaticMove(Game* game){
     return result;
 }
 
+int getWinner(Game* game){
+    int maxSize = game->grid->rows * game->grid->columns;
+    
+    for(int x = 0; x < game->grid->rows; x++){
+        if(game->grid->get(game->grid, x, 0) == 1){
+            int** matches = game->grid->search(game->grid, x, 0);
+            
+            for(int i = 0; i < maxSize; i++){
+                if(matches[i] != NULL){
+                    if(matches[i][1] == game->grid->rows){
+                        return 1;
+                    }
+                }
+            }
+        }
+    }
+
+    for(int y = 0; y < game->grid->columns; y++){
+        if(game->grid->get(game->grid, 0, y) == 2){
+            int** matches = game->grid->search(game->grid, 0, y);
+
+            for(int i = 0; i < maxSize; i++){
+                if(matches[i] != NULL){
+                    if(matches[i][0] == game->grid->columns){
+                        return 2;
+                    }
+                }
+            }
+        }
+    }
+
+    return 0;
+}
+
 int isGameOver(Game* game){
+    if(getWinner(game) != 0){
+        return 1;
+    }
+
+    // Determine if the grid is full
     for (int x = 0; x < game->grid->rows; x++){
         for (int y = 0; y < game->grid->columns; y++){
             if (game->grid->get(game->grid, x, y) == 0){
@@ -65,7 +104,7 @@ void takeTurn(Game* game){
 
     if (game->modes[game->turn] == 0){
         move = automaticMove(game);
-        printf("Player %c => %d %d\n", game->turn ? 'O' : 'X', move[0], move[1]);
+        printf("Player %c => %d %d\n", game->turn ? 'X' : 'O', move[0], move[1]);
     } else {
         move = prompt(game->turn);
     }
@@ -90,6 +129,7 @@ Game* createGame(Grid* grid, int player1Mode, int player2Mode){
 
     game->move = takeTurn;
     game->isOver = isGameOver;
+    game->winner = getWinner;
     
     return game;
 }

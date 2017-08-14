@@ -33,14 +33,11 @@ int main(int argc, char** argv){
             break;
         }
     }
-
-    int** searched = grid->search(grid, 0, 0);
-    for(int i = 0; i < (grid->rows * grid->columns); i++){
-        if(searched[i] != NULL){
-            printf("-> [%d, %d] ", searched[i][0], searched[i][1]);
-        }
+    int winner = game->winner(game);
+    if(winner != 0){
+        printf("Player %c wins\n", winner == 1 ? 'O' : 'X');
+    } else {
+        printf("Failure!\n");
     }
-    printf("\n");
-
     return 0;
 }

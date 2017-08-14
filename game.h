@@ -8,6 +8,7 @@ typedef struct game {
 
     void (*move)(struct game*);
     int (*isOver)(struct game*);
+    int (*winner)(struct game*);
 } Game;
 
 Game* createGame(Grid* grid, int player1Mode, int player2Mode);
