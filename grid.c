@@ -165,7 +165,10 @@ void print_grid(Grid* grid) {
             printf(" ");
         }
         for (int y = 0; y < grid->columns; y++) {
-            printf("%c ", convert_character(grid->values[x][y]));
+            if (y != 0) {
+                printf(" ");
+            }
+            printf("%c", convert_character(grid->values[x][y]));
         }
         printf("\n");
     }
