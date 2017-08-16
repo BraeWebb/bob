@@ -23,8 +23,9 @@ int main(int argc, char** argv){
     } else {
         grid = createGrid(10, 7);
     }
-
-    Game* game = createGame(grid, 0, 0);
+    
+    Game* game = createGame(grid, argv[1][0] == 'a' ? 0 : 1, 
+                            argv[2][0] == 'a' ? 0 : 1);
 
     printGrid(grid);
     

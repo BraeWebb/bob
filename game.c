@@ -1,17 +1,79 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <ctype.h>
 
 #include "game.h"
 
-int* prompt(int turn) {
-    printf("Player %c] ", turn ? 'O' : 'X');
-    printf("\n");
+int* prompt(Game* game) {
+
     int* move = malloc(sizeof(int) * 2);
 
-    move[0] = 0;
-    move[1] = 0;
+    while (1) {
+        printf("Player %c] ", game->turn ? 'X' : 'O');
+        
+        int fail = 0;
+        int next = 0;
+        int position = 0;
+        int spaces = 0;
+        int saving = 0;
+        int savePosition = 0;
+        int saveFileLength = 70;
+        char* saveFile = malloc(sizeof(char) * saveFileLength);
+        
+        move[0] = 0;
+        move[1] = 0;
+    
+        while (1) {
+            next = fgetc(stdin);
+            if (next == '\n'){
+                break;
+            }
+            if (next == 's'){
+                if(position == 0){
+                    saving = 1;
+                    continue;
+                }
+            }
+            if (next == ' '){
+                spaces++;
+                if(spaces > 1){
+                    fail = 1;
+                    break;
+                }
+                continue;
+            }
+            if (saving){
+                if(savePosition > saveFileLength){
+                    saveFileLength = saveFileLength + 70;
+                    saveFile = realloc(saveFile, saveFileLength);
+                }
+                saveFile[savePosition++] = next;
+            } else {
+                if(isdigit(next)){
+                    move[spaces] = move[spaces] * 10 + (next - '0');
+                    if (move[0] >= game->grid->rows
+                        || move[1] >= game->grid->columns){
+                        fail = 1;
+                        break;
+                    }
+                } else {
+                    fail = 1;
+                    break;
+                }
+            }
+            position++;
+        }
 
-    return move;
+        printf("%s\n", saveFile);
+
+        fflush(stdin);
+
+        if(fail){
+            continue;
+        }
+
+        return move;
+    }
 }
 
 int* automaticMove(Game* game){
@@ -106,7 +168,7 @@ void takeTurn(Game* game){
         move = automaticMove(game);
         printf("Player %c => %d %d\n", game->turn ? 'X' : 'O', move[0], move[1]);
     } else {
-        move = prompt(game->turn);
+        move = prompt(game);
     }
     game->grid->set(game->grid, move[0], move[1], (game->turn + 1));
     game->moves[game->turn]++;
