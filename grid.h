@@ -19,3 +19,5 @@ typedef struct grid {
 Grid* createGrid(int rows, int columns);
 
 void printGrid(Grid* grid);
+
+Grid* loadGrid(FILE* file, int rows, int columns);

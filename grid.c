@@ -130,6 +130,17 @@ char* serializeGrid(Grid* grid){
     return string;
 }
 
+
+Grid* createGridMethods(Grid* grid){
+    grid->set = setGridValue;
+    grid->get = getGridValue;
+    grid->serialize = serializeGrid;
+    grid->findNeighbours = getNeighbours;
+    grid->search = searchGrid;
+
+    return grid;
+}
+
 Grid* createGrid(int rows, int columns){
     Marker** values = malloc(sizeof(Marker *) * rows);
     
@@ -143,11 +154,7 @@ Grid* createGrid(int rows, int columns){
     grid->columns = columns;
     grid->values = values;
 
-    grid->set = setGridValue;
-    grid->get = getGridValue;
-    grid->serialize = serializeGrid;
-    grid->findNeighbours = getNeighbours;
-    grid->search = searchGrid;    
+    grid = createGridMethods(grid);
 
     return grid;
 }
@@ -162,4 +169,47 @@ void printGrid(Grid* grid){
         }
         printf("\n");
     }
+}
+
+Grid* loadGrid(FILE* file, int rows, int columns){
+
+    Grid* grid = createGrid(rows, columns);
+
+    Marker** values = grid->values;
+    
+    int started = 0;
+    int x = 0;
+    int y = 0;
+    int next = 0;
+    Marker marker;
+
+    while (1) {
+        next = fgetc(file);
+        if (next == EOF){
+            break;
+        }
+        if (next == '\n'){
+            if (!started){
+                started = 1;
+            } else {
+                x++;
+                y = 0;
+            }
+            continue;
+        }
+        if (!started){
+            continue;
+        }
+        if (next == 'O'){
+            marker = PLAYER1;
+        } else if (next == 'X'){
+            marker = PLAYER2;
+        } else if (next == '.'){
+            marker = EMPTY;
+        }
+        values[x][y] = marker;
+        y++;
+    }
+    
+    return grid;
 }

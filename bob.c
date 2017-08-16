@@ -13,7 +13,15 @@ int main(int argc, char** argv){
 
     Grid* grid;
 
-    if(argc == 5){
+    if(argc == 4){
+        printf("Opening %s\n", argv[3]);
+        FILE* file = fopen(argv[3], "r");
+        if(file == NULL){
+            printf("Could not start reading file from savefile");
+            return 4;
+        }
+        grid = loadGrid(file, 5, 5);
+    }else if(argc == 5){
         char* p;
         long rows = strtol(argv[3], &p, 10);
         long columns = strtol(argv[4], &p, 10);

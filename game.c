@@ -58,7 +58,7 @@ int getWinner(Game* game){
             
             for(int i = 0; i < maxSize; i++){
                 if(matches[i] != NULL){
-                    if(matches[i][1] == game->grid->rows){
+                    if(matches[i][1] == game->grid->columns - 1){
                         return 1;
                     }
                 }
@@ -72,7 +72,7 @@ int getWinner(Game* game){
 
             for(int i = 0; i < maxSize; i++){
                 if(matches[i] != NULL){
-                    if(matches[i][0] == game->grid->columns){
+                    if(matches[i][0] == game->grid->rows - 1){
                         return 2;
                     }
                 }
