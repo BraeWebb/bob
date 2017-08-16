@@ -6,7 +6,9 @@
 
 int main(int argc, char** argv){
 
-    int error_code = validate(argc, argv);
+    int* dimensions = malloc(sizeof(int) * 2);
+
+    int error_code = validate(argc, argv, dimensions);
     if(error_code != 0){
         return error_code;
     }
@@ -14,18 +16,10 @@ int main(int argc, char** argv){
     Grid* grid;
 
     if(argc == 4){
-        printf("Opening %s\n", argv[3]);
         FILE* file = fopen(argv[3], "r");
-        if(file == NULL){
-            printf("Could not start reading file from savefile");
-            return 4;
-        }
-        grid = loadGrid(file, 5, 5);
+        grid = loadGrid(file, dimensions[0], dimensions[1]);
     }else if(argc == 5){
-        char* p;
-        long rows = strtol(argv[3], &p, 10);
-        long columns = strtol(argv[4], &p, 10);
-        grid = createGrid(rows, columns);
+        grid = createGrid(dimensions[0], dimensions[1]);
     } else {
         grid = createGrid(10, 7);
     }
