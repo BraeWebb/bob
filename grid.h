@@ -12,12 +12,12 @@ typedef struct grid {
     void (*set)(struct grid*, int, int, Marker);
     Marker (*get)(struct grid*, int, int);
     char* (*serialize)(struct grid*);
-    int** (*findNeighbours)(struct grid*, int, int);
+    int** (*find_neighbours)(struct grid*, int, int);
     int** (*search)(struct grid*, int, int);
 } Grid;
 
-Grid* createGrid(int rows, int columns);
+Grid* create_grid(int rows, int columns);
 
-void printGrid(Grid* grid);
+void print_grid(Grid* grid);
 
-Grid* loadGrid(FILE* file, int rows, int columns);
+Grid* load_grid(FILE* file, int rows, int columns);

@@ -25,34 +25,34 @@ int* prompt(Game* game) {
     
         while (1) {
             next = fgetc(stdin);
-            if (next == '\n'){
+            if (next == '\n') {
                 break;
             }
-            if (next == 's'){
-                if(position == 0){
+            if (next == 's') {
+                if(position == 0) {
                     saving = 1;
                     continue;
                 }
             }
-            if (next == ' '){
+            if (next == ' ') {
                 spaces++;
-                if(spaces > 1){
+                if(spaces > 1) {
                     fail = 1;
                     break;
                 }
                 continue;
             }
-            if (saving){
-                if(savePosition > saveFileLength){
+            if (saving) {
+                if(savePosition > saveFileLength) {
                     saveFileLength = saveFileLength + 70;
                     saveFile = realloc(saveFile, saveFileLength);
                 }
                 saveFile[savePosition++] = next;
             } else {
-                if(isdigit(next)){
+                if(isdigit(next)) {
                     move[spaces] = move[spaces] * 10 + (next - '0');
                     if (move[0] >= game->grid->rows
-                        || move[1] >= game->grid->columns){
+                            || move[1] >= game->grid->columns) {
                         fail = 1;
                         break;
                     }
@@ -68,7 +68,7 @@ int* prompt(Game* game) {
 
         fflush(stdin);
 
-        if(fail){
+        if (fail) {
             continue;
         }
 
@@ -76,7 +76,7 @@ int* prompt(Game* game) {
     }
 }
 
-int* automaticMove(Game* game){
+int* automatic_move(Game* game) {
     int gridHeight = game->grid->rows;
     int gridWidth = game->grid->columns;
 
@@ -88,16 +88,16 @@ int* automaticMove(Game* game){
         
         n = game->moves[game->turn];
 
-        if (game->turn == 0){
+        if (game->turn == 0) {
             t = ((n * 9 % 1000037) + 17);
         } else {
             t = ((n * 7 % 1000213) + 81);
         }
     
-        row = (t/m) % gridHeight;
+        row = (t / m) % gridHeight;
         column = t % gridWidth;
 
-        if (game->grid->get(game->grid, row, column) != 0){
+        if (game->grid->get(game->grid, row, column) != 0) {
             game->moves[game->turn]++;
         } else {
             break;
@@ -111,16 +111,16 @@ int* automaticMove(Game* game){
     return result;
 }
 
-int getWinner(Game* game){
+int get_winner(Game* game) {
     int maxSize = game->grid->rows * game->grid->columns;
     
-    for(int x = 0; x < game->grid->rows; x++){
-        if(game->grid->get(game->grid, x, 0) == 1){
+    for (int x = 0; x < game->grid->rows; x++) {
+        if (game->grid->get(game->grid, x, 0) == 1) {
             int** matches = game->grid->search(game->grid, x, 0);
             
-            for(int i = 0; i < maxSize; i++){
-                if(matches[i] != NULL){
-                    if(matches[i][1] == game->grid->columns - 1){
+            for (int i = 0; i < maxSize; i++) {
+                if (matches[i] != NULL) {
+                    if (matches[i][1] == game->grid->columns - 1) {
                         return 1;
                     }
                 }
@@ -128,13 +128,13 @@ int getWinner(Game* game){
         }
     }
 
-    for(int y = 0; y < game->grid->columns; y++){
-        if(game->grid->get(game->grid, 0, y) == 2){
+    for (int y = 0; y < game->grid->columns; y++) {
+        if (game->grid->get(game->grid, 0, y) == 2) {
             int** matches = game->grid->search(game->grid, 0, y);
 
-            for(int i = 0; i < maxSize; i++){
-                if(matches[i] != NULL){
-                    if(matches[i][0] == game->grid->rows - 1){
+            for (int i = 0; i < maxSize; i++) {
+                if (matches[i] != NULL) {
+                    if (matches[i][0] == game->grid->rows - 1) {
                         return 2;
                     }
                 }
@@ -145,15 +145,15 @@ int getWinner(Game* game){
     return 0;
 }
 
-int isGameOver(Game* game){
-    if(getWinner(game) != 0){
+int is_game_over(Game* game) {
+    if (get_winner(game) != 0) {
         return 1;
     }
 
     // Determine if the grid is full
-    for (int x = 0; x < game->grid->rows; x++){
-        for (int y = 0; y < game->grid->columns; y++){
-            if (game->grid->get(game->grid, x, y) == 0){
+    for (int x = 0; x < game->grid->rows; x++) {
+        for (int y = 0; y < game->grid->columns; y++) {
+            if (game->grid->get(game->grid, x, y) == 0) {
                 return 0;
             }
         }
@@ -161,11 +161,11 @@ int isGameOver(Game* game){
     return 1;
 }
 
-void takeTurn(Game* game){
+void take_turn(Game* game) {
     int* move = malloc(sizeof(int) * 2);
 
-    if (game->modes[game->turn] == 0){
-        move = automaticMove(game);
+    if (game->modes[game->turn] == 0) {
+        move = automatic_move(game);
         printf("Player %c => %d %d\n", game->turn ? 'X' : 'O', move[0], move[1]);
     } else {
         move = prompt(game);
@@ -175,7 +175,7 @@ void takeTurn(Game* game){
     game->turn = game->turn ? 0 : 1;
 }
 
-Game* createGame(Grid* grid, int player1Mode, int player2Mode){
+Game* create_game(Grid* grid, int player1Mode, int player2Mode) {
     Game* game = malloc(sizeof(Game));
     
     int* modes = malloc(sizeof(int) * 2);
@@ -189,9 +189,9 @@ Game* createGame(Grid* grid, int player1Mode, int player2Mode){
     game->moves = moves;
     game->grid = grid;
 
-    game->move = takeTurn;
-    game->isOver = isGameOver;
-    game->winner = getWinner;
+    game->move = take_turn;
+    game->is_over = is_game_over;
+    game->winner = get_winner;
     
     return game;
 }
