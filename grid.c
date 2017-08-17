@@ -169,19 +169,21 @@ int** search_grid(Grid* grid, int startX, int startY) {
 
 
 /**
- * TODO: DOCUMENT WHEN WORKING
+ * Exports the state of the current grid to an output file.
  */
-char* serialize_grid(Grid* grid) {
-    char* string = malloc(sizeof(Marker) * grid->rows * (grid->columns + 1));
-    
+void serialize_grid(Grid* grid, FILE* output) {
+
     for (int x = 0; x < grid->rows; x++) {
+        char* row = malloc(sizeof(char) * grid->columns);
+
         for (int y = 0; y < grid->columns; y++) {
-            string[grid->columns * x + y] = convert_character(grid->get(grid, x, y));
+            row[y] = convert_character(grid->get(grid, x, y));
         }
-        string[grid->columns * x + grid->rows] = '\n';
+
+        fprintf(output, row);
+        fprintf(output, "\n");
     }
-    
-    return string;
+
 }
 
 

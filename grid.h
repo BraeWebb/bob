@@ -11,7 +11,7 @@ typedef struct Grid {
 
     void (*set)(struct Grid*, int, int, Marker);
     Marker (*get)(struct Grid*, int, int);
-    char* (*serialize)(struct Grid*);
+    void (*serialize)(struct Grid*, FILE* output);
     int** (*findNeighbours)(struct Grid*, int, int);
     int** (*search)(struct Grid*, int, int);
 } Grid;

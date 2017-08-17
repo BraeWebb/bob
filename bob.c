@@ -15,7 +15,6 @@ void play_game(Game* game) {
     while (!game->isOver(game)) {
         game->move(game);
         print_grid(game->grid);
-
     }
     
     // Determine the winner of the game and print the result
