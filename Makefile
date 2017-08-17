@@ -19,4 +19,4 @@ run: build
 	./bob a a 3 3
 
 clean:
-	rm -f bob grid.o validate.o
+	rm -f bob grid.o validate.o game.o
