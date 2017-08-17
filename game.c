@@ -229,7 +229,8 @@ void take_turn(Game* game) {
     if (game->modes[game->turn] == 0) {
         // If it's an automatic players turn then generate the move.
         move = automatic_move(game);
-        printf("Player %c => %d %d\n", game->turn ? 'X' : 'O', move[0], move[1]);
+        char player = game->turn ? 'X' : 'O';
+        printf("Player %c => %d %d\n", player, move[0], move[1]);
     } else {
         // If it's a manual players turn then prompt for their move.
         move = prompt(game);
@@ -265,7 +266,7 @@ Game* create_game(Grid* grid, int player1Mode, int player2Mode) {
 
     // Assigns local functions to struct properties for a 'class' experience.
     game->move = take_turn;
-    game->is_over = is_game_over;
+    game->isOver = is_game_over;
     game->winner = get_winner;
     
     return game;

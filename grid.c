@@ -145,13 +145,12 @@ int** search_grid(Grid* grid, int startX, int startY) {
         int x = node[0];
         int y = node[1];
         
-        // Only continue if the next node is the right type.
         if (grid->get(grid, x, y) == type) {
             // Ensure this node hasn't been visited already.
             if (!position_in_array(node, visited, maxSize)) {
                 
                 // Find all of the nodes neighbours.
-                int** neighbours = grid->find_neighbours(grid, x, y);
+                int** neighbours = grid->findNeighbours(grid, x, y);
                 
                 // Add all valid neighbours to the node search.
                 for (int i = 0; i < 6; i++) {
@@ -160,16 +159,14 @@ int** search_grid(Grid* grid, int startX, int startY) {
                     }
                 }
                 
-                // Mark the node as visited.
                 visited[visitedCount++] = node;
             }
         }
     }
 
-    free(nodes);
-
     return visited;
 }
+
 
 /**
  * TODO: DOCUMENT WHEN WORKING
@@ -180,7 +177,6 @@ char* serialize_grid(Grid* grid) {
     for (int x = 0; x < grid->rows; x++) {
         for (int y = 0; y < grid->columns; y++) {
             string[grid->columns * x + y] = convert_character(grid->get(grid, x, y));
-            //printf("%d: %c\n", grid->rows * x + y, convert_character(grid->get(grid, x, y)));
         }
         string[grid->columns * x + grid->rows] = '\n';
     }
@@ -196,7 +192,7 @@ Grid* create_grid_methods(Grid* grid) {
     grid->set = set_grid_value;
     grid->get = get_grid_value;
     grid->serialize = serialize_grid;
-    grid->find_neighbours = get_neighbours;
+    grid->findNeighbours = get_neighbours;
     grid->search = search_grid;
 
     return grid;
@@ -208,7 +204,7 @@ Grid* create_grid_methods(Grid* grid) {
  * Returns a pointer to the newly created grid structure.
  */
 Grid* create_grid(int rows, int columns) {
-    Marker** values = malloc(sizeof(Marker *) * rows);
+    Marker** values = malloc(sizeof(Marker*) * rows);
     
     // Allocate space for each row.
     for (int i = 0; i < rows; i++) {
@@ -250,24 +246,14 @@ void print_grid(Grid* grid) {
 }
 
 /**
- * Reads through a file and creates a grid based on the file.
- *
- * Returns a pointer to a new grid with the given rows, columns and values
- * assigned based off the file contents.
+ * Reads the contents of a file to fill out a grid's values array.
  */
-Grid* load_grid(FILE* file, int rows, int columns) {
-
-    // Create a new empty grid.
-    Grid* grid = create_grid(rows, columns);
-    
-    Marker** values = grid->values;
-    
-    // Set variables used to keep track during file reading.
+void read_file(FILE* file, Marker** values) {
     int started = 0;
     int x = 0;
     int y = 0;
+    Marker marker;    
     int next = 0;
-    Marker marker;
 
     while (1) {
         next = fgetc(file);
@@ -304,6 +290,23 @@ Grid* load_grid(FILE* file, int rows, int columns) {
         values[x][y] = marker;
         y++;
     }
+}
+
+
+/**
+ * Reads through a file and creates a grid based on the file.
+ *
+ * Returns a pointer to a new grid with the given rows, columns and values
+ * assigned based off the file contents.
+ */
+Grid* load_grid(FILE* file, int rows, int columns) {
+
+    // Create a new empty grid.
+    Grid* grid = create_grid(rows, columns);
+    
+    Marker** values = grid->values;
+
+    read_file(file, values);
     
     return grid;
 }

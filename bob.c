@@ -12,7 +12,7 @@ void play_game(Game* game) {
     
     print_grid(game->grid);
 
-    while (!game->is_over(game)) {
+    while (!game->isOver(game)) {
         game->move(game);
         print_grid(game->grid);
 

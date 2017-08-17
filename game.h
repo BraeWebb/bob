@@ -6,15 +6,15 @@
  * Includes the move, is_over and winner methods.
  *
  */
-typedef struct game {
+typedef struct Game {
     int turn;
     int* modes;
     int* moves;
     Grid* grid;
 
-    void (*move)(struct game*);
-    int (*is_over)(struct game*);
-    int (*winner)(struct game*);
+    void (*move)(struct Game*);
+    int (*isOver)(struct Game*);
+    int (*winner)(struct Game*);
 } Game;
 
 Game* create_game(Grid* grid, int player1Mode, int player2Mode);
