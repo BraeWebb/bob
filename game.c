@@ -271,3 +271,36 @@ Game* create_game(Grid* grid, int player1Mode, int player2Mode) {
     
     return game;
 }
+
+
+/**
+ * Creates a new game and loads it with information from a file.
+ */
+Game* load_game(FILE* file, Grid* grid, int player1Mode, int player2Mode) {
+    Game* game = create_game(grid, player1Mode, player2Mode);
+
+    int next = 0;
+    int value = 0;
+    int* values = calloc(5, sizeof(int));
+
+    while (1) {
+        next = fgetc(file);
+        
+        if (next == '\n' || next == EOF) {
+            break;
+        }
+        
+        if (next == ',') {
+            value++;
+            continue;
+        }
+
+        values[value] = (values[value] * 10) + (next - '0');
+    }
+
+    game->turn = values[0];
+    game->moves[0] = values[3];
+    game->moves[1] = values[4];
+
+    return game;
+}

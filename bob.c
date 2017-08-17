@@ -48,22 +48,22 @@ int main(int argc, char** argv) {
     }
 
     Grid* grid;
+    Game* game;
+
+    int player1 = argv[1][0] == 'a' ? 0 : 1;
+    int player2 = argv[2][0] == 'a' ? 0 : 1;
 
     if (argc == 4) {
         // Loads the grid from a file.
         FILE* file = fopen(argv[3], "r");
         grid = load_grid(file, dimensions[0], dimensions[1]);
+        rewind(file);
+        game = load_game(file, grid, player1, player2);
     } else if(argc == 5) {
-        // Creates a grid based on provided dimensions.
+        // Creates a game and grid based on parameters provided.
         grid = create_grid(dimensions[0], dimensions[1]);
-    } else {
-        // TODO: Check if this is allowed behaviour
-        grid = create_grid(10, 7);
+        game = create_game(grid, player1, player2);
     }
-    
-    // Creates a game based off the grid and the types of players requested.
-    Game* game = create_game(grid, argv[1][0] == 'a' ? 0 : 1, 
-                                argv[2][0] == 'a' ? 0 : 1);
 
     play_game(game);
 

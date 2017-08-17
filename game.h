@@ -18,3 +18,5 @@ typedef struct Game {
 } Game;
 
 Game* create_game(Grid* grid, int player1Mode, int player2Mode);
+
+Game* load_game(FILE* file, Grid* grid, int player1Mode, int player2Mode);

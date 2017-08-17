@@ -36,7 +36,7 @@ int error(int errorCode) {
 
 int validate(int argc, char** argv, int* dimensions) {
     
-    if (argc < 3 || argc > 5) {
+    if (argc < 4 || argc > 5) {
         return error(1);
     }
     
