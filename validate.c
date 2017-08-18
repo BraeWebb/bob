@@ -45,7 +45,7 @@ int error(int errorCode) {
  * Returns NULL if the file is formatted incorrectly, otherwise returns the
  * dimensions of the grid in the file.
  */
-int* validate_file(FILE* file){
+int* validate_file(FILE* file) {
     
     int next = 0;
     int* dimensions = malloc(sizeof(int) * 2);

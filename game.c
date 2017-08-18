@@ -47,7 +47,7 @@ int* prompt(Game* game) {
                     printf("\n");
                     break;
                 }
-                if (output[i] == ' '){
+                if (output[i] == ' ') {
                     spaces++;
                     if (spaces > 1) {
                         break;
@@ -71,6 +71,10 @@ int* prompt(Game* game) {
         }
 
         if (move[0] >= game->grid->rows || move[1] >= game->grid->rows) {
+            continue;
+        }
+
+        if (game->grid->get(game->grid, move[0], move[1]) != 0) {
             continue;
         } 
 
