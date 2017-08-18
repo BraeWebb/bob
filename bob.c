@@ -69,7 +69,7 @@ int main(int argc, char** argv) {
         game = create_game(grid, player1, player2);
     }
 
-    if (play_game(game) == 6){
+    if (play_game(game) == 6) {
         fprintf(stderr, "EOF from user\n");
         return 6;
     }

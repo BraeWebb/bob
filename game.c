@@ -35,8 +35,7 @@ int* prompt(Game* game) {
             // Chop off the leading s and the trailing new line.
             strncpy(saveFile, output + 1, strlen(output) - 2);
             
-            FILE* file = fopen(saveFile, "w");
-            game->save(game, file);
+            game->save(game, saveFile);
  
             continue;
         } else {
@@ -255,10 +254,14 @@ void take_turn(Game* game) {
 /**
  * Saves the current state of a game and a grid into a specified file.
  */
-void save_game(Game* game, FILE* file) {
+void save_game(Game* game, char* filename) {
+    // NOTE: I've had to open the file here because style.sh rejects
+    // having a file pointer in header files
+    FILE* file = fopen(filename, "w");
     fprintf(file, "%d,%d,%d,%d,%d\n", game->turn, game->grid->rows, 
             game->grid->columns, game->moves[0], game->moves[1]);
-    game->grid->save(game->grid, file);
+    fclose(file);
+    game->grid->save(game->grid, filename);
 }
 
 

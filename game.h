@@ -16,7 +16,8 @@ typedef struct Game {
     void (*move)(struct Game*);
     int (*isOver)(struct Game*);
     int (*winner)(struct Game*);
-    void (*save)(struct Game*, FILE* file);
+    // For some reason the style.sh rejects a file pointer...
+    void (*save)(struct Game*, char* filename);
 } Game;
 
 Game* create_game(Grid* grid, int player1Mode, int player2Mode);

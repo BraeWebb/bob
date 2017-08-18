@@ -13,7 +13,7 @@ typedef struct Grid {
     Marker (*get)(struct Grid*, int, int);
     int** (*findNeighbours)(struct Grid*, int, int);
     int** (*search)(struct Grid*, int, int);
-    void (*save)(struct Grid*, FILE* file);
+    void (*save)(struct Grid*, char* filename);
 } Grid;
 
 Grid* create_grid(int rows, int columns);
