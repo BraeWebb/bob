@@ -6,7 +6,9 @@
 
 
 /**
- * Play through a game until the game is over then print the winner
+ * Play through a game until the game is over then print the winner.
+ *
+ * Returns 0 if the game is completed successfully or 6 if an EOF has occured.
  */
 int play_game(Game* game) {
     
@@ -65,8 +67,7 @@ int main(int argc, char** argv) {
         game = load_game(file, grid, player1, player2);
         
         if (game == NULL) {
-            fprintf(stderr, "Incorrect file contents\n");
-            return 5;
+            return error(5);
         }
 
     } else if(argc == 5) {
@@ -76,8 +77,7 @@ int main(int argc, char** argv) {
     }
 
     if (play_game(game) == 6) {
-        fprintf(stderr, "EOF from user\n");
-        return 6;
+        return error(6);
     }
 
     return 0;

@@ -11,6 +11,7 @@
 #define GRID_DIMENSIONS "Sensible board dimensions please!\n"
 #define FILE_OPEN "Could not start reading from savefile\n"
 #define FILE_READ "Incorrect file contents\n"
+#define USER_EOF "EOF from user\n"
 
 /**
  * Takes an error code and prints the appropriate error message to stderr.
@@ -34,6 +35,9 @@ int error(int errorCode) {
         case 5:
             fprintf(stderr, FILE_READ);
             return 5;
+        case 6:
+            fprintf(stderr, USER_EOF);
+            return 6;
         default:
             return errorCode;
     } 
