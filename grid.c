@@ -193,9 +193,9 @@ void serialize_grid(Grid* grid, FILE* output) {
 Grid* create_grid_methods(Grid* grid) {
     grid->set = set_grid_value;
     grid->get = get_grid_value;
-    grid->serialize = serialize_grid;
     grid->findNeighbours = get_neighbours;
     grid->search = search_grid;
+    grid->save = serialize_grid;
 
     return grid;
 }

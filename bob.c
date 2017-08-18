@@ -8,12 +8,16 @@
 /**
  * Play through a game until the game is over then print the winner
  */
-void play_game(Game* game) {
+int play_game(Game* game) {
     
     print_grid(game->grid);
 
     while (!game->isOver(game)) {
         game->move(game);
+        // Stop when the game is forcefully ended.
+        if (game->over) {
+            return 6;
+        }
         print_grid(game->grid);
     }
     
@@ -22,9 +26,9 @@ void play_game(Game* game) {
     
     if (winner != 0) {
         printf("Player %c wins\n", winner == 1 ? 'O' : 'X');
-    } else {
-        printf("Nobody won\n");
     }
+
+    return 0;
 }
 
 /**
@@ -65,7 +69,10 @@ int main(int argc, char** argv) {
         game = create_game(grid, player1, player2);
     }
 
-    play_game(game);
+    if (play_game(game) == 6){
+        fprintf(stderr, "EOF from user\n");
+        return 6;
+    }
 
     return 0;
 }

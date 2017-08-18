@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <ctype.h>
 
 #include "game.h"
@@ -11,66 +12,66 @@ int* prompt(Game* game) {
     while (1) {
         printf("Player %c] ", game->turn ? 'X' : 'O');
         
-        int fail = 0;
-        int next = 0;
-        int position = 0;
         int spaces = 0;
-        int saving = 0;
-        int savePosition = 0;
-        int saveFileLength = 70;
-        char* saveFile = malloc(sizeof(char) * saveFileLength);
+        int setX = 0;
+        int setY = 0;
+        int badInput = 0;
+        int maxLineLength = 70;
+        char* saveFile = malloc(sizeof(char) * maxLineLength);
         
         move[0] = 0;
         move[1] = 0;
     
-        while (1) {
-            next = fgetc(stdin);
-            if (next == '\n') {
-                break;
-            }
-            if (next == 's') {
-                if(position == 0) {
-                    saving = 1;
-                    continue;
-                }
-            }
-            if (next == ' ') {
-                spaces++;
-                if(spaces > 1) {
-                    fail = 1;
+        char* output = malloc(sizeof(char) * maxLineLength);
+
+        char* result = fgets(output, maxLineLength, stdin);
+
+        if (result == NULL) {
+            game->over = 1;
+            return NULL;
+        }
+
+        if (output[0] == 's') {
+            // Chop off the leading s and the trailing new line.
+            strncpy(saveFile, output + 1, strlen(output) - 2);
+            
+            FILE* file = fopen(saveFile, "w");
+            game->save(game, file);
+ 
+            continue;
+        } else {
+            for (int i = 0; i < maxLineLength; i++) {
+                if (output[i] == '\n') {
                     break;
                 }
-                continue;
-            }
-            if (saving) {
-                if(savePosition > saveFileLength) {
-                    saveFileLength = saveFileLength + 70;
-                    saveFile = realloc(saveFile, saveFileLength);
-                }
-                saveFile[savePosition++] = next;
-            } else {
-                if(isdigit(next)) {
-                    move[spaces] = move[spaces] * 10 + (next - '0');
-                    if (move[0] >= game->grid->rows
-                            || move[1] >= game->grid->columns) {
-                        fail = 1;
+                if (output[i] == ' '){
+                    spaces++;
+                    if (spaces > 1) {
                         break;
                     }
+                } else if (isdigit(output[i])) {
+                    if (spaces == 0) {
+                        setX = 1;
+                    } else if (spaces == 1) {
+                        setY = 1;
+                    }
+                    move[spaces] = (move[spaces] * 10) + (output[i] - '0');
                 } else {
-                    fail = 1;
+                    badInput = 1;
                     break;
                 }
             }
-            position++;
         }
 
-        printf("%s\n", saveFile);
-
-        fflush(stdin);
-
-        if (fail) {
+        if (badInput || spaces > 1 || !setX || !setY) {
             continue;
         }
+
+        if (move[0] >= game->grid->rows || move[1] >= game->grid->rows) {
+            continue;
+        }
+
+        
 
         return move;
     }
@@ -199,6 +200,11 @@ int get_winner(Game* game) {
  *
  */
 int is_game_over(Game* game) {
+    // Ensure that the game has not been forcefully ended.
+    if (game->over) {
+        return 1;
+    }
+
     // Determine if the game has a winner
     if (get_winner(game) != 0) {
         return 1;
@@ -231,14 +237,26 @@ void take_turn(Game* game) {
         move = automatic_move(game);
         char player = game->turn ? 'X' : 'O';
         printf("Player %c => %d %d\n", player, move[0], move[1]);
+        game->moves[game->turn]++;
     } else {
         // If it's a manual players turn then prompt for their move.
         move = prompt(game);
+        if (move == NULL) {
+            return;
+        }
     }
     // Update the game based on the selected move.
     game->grid->set(game->grid, move[0], move[1], (game->turn + 1));
-    game->moves[game->turn]++;
-    game->turn = game->turn ? 0 : 1;
+    game->turn = !game->turn;
+}
+
+/**
+ * Saves the current state of a game and a grid into a specified file.
+ */
+void save_game(Game* game, FILE* file) {
+    fprintf(file, "%d,%d,%d,%d,%d\n", game->turn, game->grid->rows, 
+            game->grid->columns, game->moves[0], game->moves[1]);
+    game->grid->save(game->grid, file);
 }
 
 
@@ -263,11 +281,13 @@ Game* create_game(Grid* grid, int player1Mode, int player2Mode) {
     game->modes = modes;
     game->moves = moves;
     game->grid = grid;
+    game->over = 0;
 
     // Assigns local functions to struct properties for a 'class' experience.
     game->move = take_turn;
     game->isOver = is_game_over;
     game->winner = get_winner;
+    game->save = save_game;
     
     return game;
 }

@@ -11,10 +11,12 @@ typedef struct Game {
     int* modes;
     int* moves;
     Grid* grid;
+    int over;
 
     void (*move)(struct Game*);
     int (*isOver)(struct Game*);
     int (*winner)(struct Game*);
+    void (*save)(struct Game*, FILE* file);
 } Game;
 
 Game* create_game(Grid* grid, int player1Mode, int player2Mode);
