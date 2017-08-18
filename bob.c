@@ -63,6 +63,12 @@ int main(int argc, char** argv) {
         grid = load_grid(file, dimensions[0], dimensions[1]);
         rewind(file);
         game = load_game(file, grid, player1, player2);
+        
+        if (game == NULL) {
+            fprintf(stderr, "Incorrect file contents\n");
+            return 5;
+        }
+
     } else if(argc == 5) {
         // Creates a game and grid based on parameters provided.
         grid = create_grid(dimensions[0], dimensions[1]);

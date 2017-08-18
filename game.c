@@ -304,6 +304,9 @@ Game* create_game(Grid* grid, int player1Mode, int player2Mode) {
 
 /**
  * Creates a new game and loads it with information from a file.
+ *
+ * Returns NULL if an error occurs loading the game, otherwise it returns
+ * the newly created Game.
  */
 Game* load_game(FILE* file, Grid* grid, int player1Mode, int player2Mode) {
     Game* game = create_game(grid, player1Mode, player2Mode);
@@ -325,6 +328,10 @@ Game* load_game(FILE* file, Grid* grid, int player1Mode, int player2Mode) {
         }
 
         values[value] = (values[value] * 10) + (next - '0');
+    }
+
+    if (values[1] != grid->rows || values[2] != grid->columns) {
+        return NULL;
     }
 
     game->turn = values[0];
