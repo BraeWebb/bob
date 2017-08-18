@@ -25,7 +25,7 @@ int* prompt(Game* game) {
         char* output = malloc(sizeof(char) * maxLineLength);
 
         char* result = fgets(output, maxLineLength, stdin);
-
+        
         if (result == NULL) {
             game->over = 1;
             return NULL;
@@ -42,6 +42,10 @@ int* prompt(Game* game) {
         } else {
             for (int i = 0; i < maxLineLength; i++) {
                 if (output[i] == '\n') {
+                    break;
+                }
+                if (output[i] == '\0') {
+                    printf("\n");
                     break;
                 }
                 if (output[i] == ' '){
@@ -69,9 +73,7 @@ int* prompt(Game* game) {
 
         if (move[0] >= game->grid->rows || move[1] >= game->grid->rows) {
             continue;
-        }
-
-        
+        } 
 
         return move;
     }
