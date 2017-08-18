@@ -14,6 +14,7 @@ typedef struct Grid {
     int** (*findNeighbours)(struct Grid*, int, int);
     int** (*search)(struct Grid*, int, int);
     void (*save)(struct Grid*, char* filename);
+    int (*inGrid)(struct Grid*, int x, int y);
 } Grid;
 
 Grid* create_grid(int rows, int columns);

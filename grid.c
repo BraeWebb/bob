@@ -198,6 +198,7 @@ Grid* create_grid_methods(Grid* grid) {
     grid->findNeighbours = get_neighbours;
     grid->search = search_grid;
     grid->save = serialize_grid;
+    grid->inGrid = is_in_grid;
 
     return grid;
 }

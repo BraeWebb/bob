@@ -5,33 +5,104 @@
 
 #include "game.h"
 
+/**
+ * Reads an input string from a user and determines whether or not the string
+ * is a valid input.
+ *
+ * Returns the move represented by an array of length 2 if the input is valid.
+ * If the input is invalid returns NULL.
+ */
+int* read_input(Game* game, char* input, int inputLength) {
+    int* move = malloc(sizeof(int) * 2);
+    move[0] = 0;
+    move[1] = 0;
+    int setX = 0;
+    int setY = 0;
+    int spaces = 0;
+    
+    // Go through each character in the input.
+    for (int i = 0; i < inputLength; i++) {
+        // Break on EOF or new line.
+        if (input[i] == '\n') {
+            break;
+        }
+        if (input[i] == '\0') {
+            printf("\n");
+            break;
+        }
+        // Increment spaces if limit has not been met.
+        if (input[i] == ' ') {
+            spaces++;
+            if (spaces > 1) {
+                return NULL;
+            }
+        } else if (isdigit(input[i])) {
+            if (spaces == 0) {
+                setX = 1;
+            } else if (spaces == 1) {
+                setY = 1;
+            }
+            // Increment the current move value by the input.
+            move[spaces] = (move[spaces] * 10) + (input[i] - '0');
+        } else {
+            return NULL;
+        }
+    }
+    // Ensure an x and y were given.
+    if (!setX || !setY) {
+        return NULL;
+    }
+    // Ensure that the move is within the grid.
+    if (!game->grid->inGrid(game->grid, move[0], move[1])) {
+        return NULL;
+    }
+    // Ensure that the space is not occupied.
+    if (game->grid->get(game->grid, move[0], move[1]) != 0) {
+        return NULL;
+    }
+
+    return move;
+}
+
+/**
+ * Prompts the user to enter a position to place their tile until they enter
+ * a valid input.
+ *
+ * Handles when players wish to save the game.
+ *
+ * Returns the position the first position that the user inputs which is valid.
+ * Returns NULL if the program is being exited by EOF.
+ */
 int* prompt(Game* game) {
 
-    int* move = malloc(sizeof(int) * 2);
-
     while (1) {
+
+        int* move = malloc(sizeof(int) * 2);    
+        
+        // Prompt the user
         printf("Player %c] ", game->turn ? 'X' : 'O');
         
-        int spaces = 0;
-        int setX = 0;
-        int setY = 0;
-        int badInput = 0;
+        
         int maxLineLength = 70;
-        char* saveFile = malloc(sizeof(char) * maxLineLength);
         
         move[0] = 0;
         move[1] = 0;
     
         char* output = malloc(sizeof(char) * maxLineLength);
-
+        
+        // Retrieve the input from the user
         char* result = fgets(output, maxLineLength, stdin);
         
+        // If the user pressed Ctrl-D then exits the program.
         if (result == NULL) {
             game->over = 1;
             return NULL;
         }
 
+        // If the input started with an s then save the game.
         if (output[0] == 's') {
+            char* saveFile = malloc(sizeof(char) * maxLineLength);
+            
             // Chop off the leading s and the trailing new line.
             strncpy(saveFile, output + 1, strlen(output) - 2);
             
@@ -39,44 +110,14 @@ int* prompt(Game* game) {
  
             continue;
         } else {
-            for (int i = 0; i < maxLineLength; i++) {
-                if (output[i] == '\n') {
-                    break;
-                }
-                if (output[i] == '\0') {
-                    printf("\n");
-                    break;
-                }
-                if (output[i] == ' ') {
-                    spaces++;
-                    if (spaces > 1) {
-                        break;
-                    }
-                } else if (isdigit(output[i])) {
-                    if (spaces == 0) {
-                        setX = 1;
-                    } else if (spaces == 1) {
-                        setY = 1;
-                    }
-                    move[spaces] = (move[spaces] * 10) + (output[i] - '0');
-                } else {
-                    badInput = 1;
-                    break;
-                }
+            // Read the input from the user.
+            move = read_input(game, output, maxLineLength);
+            
+            // Ask again if the input is invalid.
+            if (move == NULL) {
+                continue;
             }
         }
-
-        if (badInput || spaces > 1 || !setX || !setY) {
-            continue;
-        }
-
-        if (move[0] >= game->grid->rows || move[1] >= game->grid->rows) {
-            continue;
-        }
-
-        if (game->grid->get(game->grid, move[0], move[1]) != 0) {
-            continue;
-        } 
 
         return move;
     }

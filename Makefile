@@ -3,13 +3,13 @@ FLAGS=-Wall -pedantic --std=gnu99
 
 all: build
 
-grid.o: grid.c
+grid.o: grid.c grid.h
 	$(CC) $(FLAGS) -c grid.c -o grid.o
 
-game.o: game.c grid.o
+game.o: game.c game.h grid.o
 	$(CC) $(FLAGS) -c game.c grid.o -o game.o
 
-validate.o: validate.c
+validate.o: validate.c validate.h
 	$(CC) $(FLAGS) -c validate.c -o validate.o
 
 build: bob.c game.o validate.o

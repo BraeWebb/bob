@@ -69,6 +69,7 @@ int main(int argc, char** argv) {
         if (game == NULL) {
             return error(5);
         }
+        fclose(file);
 
     } else if(argc == 5) {
         // Creates a game and grid based on parameters provided.
@@ -79,6 +80,9 @@ int main(int argc, char** argv) {
     if (play_game(game) == 6) {
         return error(6);
     }
+
+    free(game);
+    free(grid);
 
     return 0;
 }

@@ -57,11 +57,9 @@ int* validate_file(FILE* file) {
     int currentColumn = 0;
     int gameDataCount = 0;
     int gameCommaCount = 0;
-    char lastGameChar = ',';
-    int character = 0;
+    char lastGameData = ',';
     
     while(1) {
-        character++;
         next = fgetc(file);
         if (next == '\n') {
             if (!readingGrid) {
@@ -80,7 +78,7 @@ int* validate_file(FILE* file) {
         }
         if (!readingGrid) {
             if (next == ',') {
-                if (lastGameChar == ',') {
+                if (lastGameData == ',') {
                     return NULL;
                 }
                 gameCommaCount++;
@@ -90,7 +88,7 @@ int* validate_file(FILE* file) {
                 }
                 gameDataCount++;
             }
-            lastGameChar = (char) next;
+            lastGameData = (char) next;
         } else {
             if (next == '.' || next == 'O' || next == 'X') {
                 if (dimensions[0] == 0) {
