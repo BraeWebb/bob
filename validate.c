@@ -44,6 +44,54 @@ int error(int errorCode) {
 }
 
 /**
+ * Reads through the first line of a file to ensure that the game data
+ * is valid.
+ *
+ * Returns 1 iff the game data is valid, otherwise 0.
+ */
+int validate_game_data(FILE* file) {
+
+    // Set up our variables
+    int next = 0;
+    char lastGameData = ',';
+    int gameCommaCount = 0;
+    int gameDataCount = 0;
+
+    while (1) {
+        next = fgetc(file);
+        // Fail if EOF occurs before grid starts.
+        if (next == EOF) {
+            return 0;
+        }
+        // Finished reading file.
+        if (next == '\n') {
+            break;
+        }
+        // Increase the comma count
+        if (next == ',') {
+            if (lastGameData == ',') {
+                return 0;
+            }
+            gameCommaCount++;
+        } else {
+            // Ensure non-commas are numbers.
+            if (!isdigit(next)) {
+                return 0;
+            }
+            gameDataCount++;
+        }
+        lastGameData = (char) next;
+    } 
+    
+    // Make sure that the data seems legit.
+    if (gameDataCount < 5 || gameCommaCount != 4) {
+        return 0;
+    }
+
+    return 1;
+}
+
+/**
  * Reads a game save file to determine if the file is formatted correctly.
  *
  * Returns NULL if the file is formatted incorrectly, otherwise returns the
@@ -53,60 +101,44 @@ int* validate_file(FILE* file) {
     
     int next = 0;
     int* dimensions = malloc(sizeof(int) * 2);
-    int readingGrid = 0;
     int currentColumn = 0;
-    int gameDataCount = 0;
-    int gameCommaCount = 0;
-    char lastGameData = ',';
-    
+
+    // Check the first line of the file is valid.   
+    if (!validate_game_data(file)) {
+        return NULL;
+    }
+ 
     while(1) {
         next = fgetc(file);
+        // On a new line increase dimensions.
         if (next == '\n') {
-            if (!readingGrid) {
-                readingGrid = 1;
-            } else {
-                if (currentColumn != dimensions[1]) {
-                    return NULL;
-                }
-                currentColumn = 0;
-                dimensions[0]++;
+            if (currentColumn != dimensions[1]) {
+                return NULL;
             }
+            currentColumn = 0;
+            dimensions[0]++;
             continue;
-        } 
+        }
+        // Finish reading on EOF.
         if (next == EOF) {
             break;
         }
-        if (!readingGrid) {
-            if (next == ',') {
-                if (lastGameData == ',') {
-                    return NULL;
-                }
-                gameCommaCount++;
-            } else {
-                if (!isdigit(next)) {
-                    return NULL;
-                }
-                gameDataCount++;
+        // Ensure that the marker is valid.
+        if (next == '.' || next == 'O' || next == 'X') {
+            if (dimensions[0] == 0) {
+                dimensions[1]++;
             }
-            lastGameData = (char) next;
+            currentColumn++;
         } else {
-            if (next == '.' || next == 'O' || next == 'X') {
-                if (dimensions[0] == 0) {
-                    dimensions[1]++;
-                }
-                currentColumn++;
-            } else {
-                return NULL;
-            }
+            return NULL;
         }
     }
     
-    if (!readingGrid || dimensions[0] == 0 || dimensions[1] == 0) {
+    // Make sure the dimensions calulates are valid.
+    if (dimensions[0] == 0 || dimensions[1] == 0) {
         return NULL;
     }
-    if (gameDataCount < 5 || gameCommaCount != 4) {
-        return NULL;
-    }
+   
     
     return dimensions;
 }
